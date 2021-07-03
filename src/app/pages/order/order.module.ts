@@ -24,6 +24,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { OrderComfirmDialogComponent } from './order-comfirm-dialog/order-comfirm-dialog.component';
 
 @Injectable()
 class OrderGuard implements CanActivate {
@@ -63,7 +65,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [OrderComponent],
+  declarations: [OrderComponent, OrderComfirmDialogComponent],
   imports: [
     MatCardModule,
     CommonModule,
@@ -83,6 +85,7 @@ const routes: Routes = [
     MatTabsModule,
     MatListModule,
     MatTableModule,
+    MatPaginatorModule,
   ],
   providers: [OrderGuard],
 })
