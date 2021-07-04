@@ -1,4 +1,4 @@
-import { OnDestroy, ViewChild } from '@angular/core';
+import { OnChanges, OnDestroy, ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,8 +7,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
-import { Item } from 'src/app/state/item';
-import { Order } from 'src/app/state/order';
+import { Item } from '@app/state/item';
+import { Order } from '@app/state/order';
+import { OrderItem, OrderItemService } from '@app/state/order-item/';
 import { OrderComfirmDialogComponent } from './order-comfirm-dialog/order-comfirm-dialog.component';
 
 @Component({
@@ -16,12 +17,12 @@ import { OrderComfirmDialogComponent } from './order-comfirm-dialog/order-comfir
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss'],
 })
-export class OrderComponent implements OnInit, OnDestroy {
+export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   subs: Subscription[] = [];
   order: Order;
-  items: Item[];
+  items: OrderItem[];
   form: FormGroup;
-  orderPrice: number;
+  orderPrice: number = 0;
   // quantity: FormArray = new FormArray([]);
   dishsFormArray: FormArray = new FormArray([]);
   drinksFormArray: FormArray = new FormArray([]);
@@ -47,10 +48,14 @@ export class OrderComponent implements OnInit, OnDestroy {
     'action',
   ];
 
+  // order table
+  // orderDisplayedColumns: string[] = ['No.', 'name', ''];
+
   constructor(
     private route: ActivatedRoute,
     private _formBuilder: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private orderItemSer: OrderItemService
   ) {}
 
   subscribe(observer: Observable<any>, callback: (...args: any) => void): void {
@@ -65,6 +70,9 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.subscribe(this.route.data, (data) => {
       if (data) {
         this.order = data.result.order;
+        this.order.items.forEach((i) => {
+          this.orderPrice += i.price * i.quantity;
+        });
         data.result.items.forEach((i) => {
           if (i.type === 'Dish') {
             this.dishsFormArray.push(
@@ -101,10 +109,14 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.parseItem();
   }
 
-  ngOnChange() {
+  ngOnChanges() {
     this.subscribe(this.route.data, (data) => {
       if (data) {
         this.order = data.result.order;
+        this.order = data.result.order;
+        this.order.items.forEach((i) => {
+          this.orderPrice += i.price * i.quantity;
+        });
         data.result.items.forEach((i) => {
           if (i.type === 'Dish') {
             this.dishsFormArray.push(
@@ -163,20 +175,28 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    const order: Item[] = [];
+    const orderItems: OrderItem[] = [];
     this.dishDataSource.data.forEach((d) => {
       if (d.value.quantity > 0) {
-        order.push(d.value as Item);
+        orderItems.push(d.value as OrderItem);
       }
     });
     this.drinkDataSource.data.forEach((d) => {
       if (d.value.quantity > 0) {
-        order.push(d.value as Item);
+        orderItems.push(d.value as OrderItem);
       }
     });
-    console.log(order);
-    this.dialog.open(OrderComfirmDialogComponent, {
-      data: order,
-    });
+    if (orderItems.length > 0) {
+      this.dialog
+        .open(OrderComfirmDialogComponent, {
+          data: orderItems,
+        })
+        .afterClosed()
+        .subscribe((confirmed) => {
+          if (confirmed) {
+            this.orderItemSer.addOrderItems(orderItems, this.order);
+          }
+        });
+    }
   }
 }

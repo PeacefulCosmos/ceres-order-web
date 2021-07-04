@@ -1,5 +1,6 @@
 import { ID } from '@datorama/akita';
 import { Item } from '../item';
+import { OrderItem } from '../order-item';
 
 export interface Order {
   _id: string;
@@ -7,7 +8,7 @@ export interface Order {
   companyId: number;
   seatIndex: string[];
   status: string;
-  items?: Item[];
+  items?: OrderItem[];
   accessCode?: string;
   createdAt: Date;
   modifiedAt?: Date;
