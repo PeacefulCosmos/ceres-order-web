@@ -174,6 +174,17 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     element.patchValue({ quantity: 0 });
   }
 
+  resetAllQuantity() {
+    this.dishsFormArray.controls.forEach((fg) => {
+      fg.patchValue({ quantity: 0 });
+    });
+    this.drinksFormArray.controls.forEach((fg) => {
+      fg.patchValue({ quantity: 0 });
+    });
+  }
+
+  settlePayment() {}
+
   onSubmit() {
     const orderItems: OrderItem[] = [];
     this.dishDataSource.data.forEach((d) => {
@@ -195,6 +206,11 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         .subscribe((confirmed) => {
           if (confirmed) {
             this.orderItemSer.addOrderItems(orderItems, this.order);
+            this.resetAllQuantity();
+            this.orderPrice = 0;
+            this.order.items.forEach((i) => {
+              this.orderPrice += i.price * i.quantity;
+            });
           }
         });
     }

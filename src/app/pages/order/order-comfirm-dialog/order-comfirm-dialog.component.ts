@@ -32,5 +32,6 @@ export class OrderComfirmDialogComponent implements OnInit {
 
   onConfirm(): void {
     this.dialogRef.close(true);
+    this.snackBar.open('Order Submit!', '', { duration: 1000 });
   }
 }

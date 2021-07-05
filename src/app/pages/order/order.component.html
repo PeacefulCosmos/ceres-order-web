@@ -21,7 +21,15 @@
             </mat-list>
             <mat-divider></mat-divider>
             <div class="total-price-wrapper">
-              <h3>Total price: ${{ orderPrice }}</h3>
+              <div class="total-price">Total price: ${{ orderPrice }}</div>
+              <button
+                mat-raised-button
+                color="primary"
+                class="settle-button"
+                (click)="settlePayment()"
+              >
+                Settle
+              </button>
             </div>
           </div>
         </mat-tab>

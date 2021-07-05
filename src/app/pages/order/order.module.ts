@@ -26,9 +26,11 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { OrderComfirmDialogComponent } from './order-comfirm-dialog/order-comfirm-dialog.component';
+import { environment } from '@env/environment';
 
 @Injectable()
 class OrderGuard implements CanActivate {
+  url: string = environment.api;
   constructor(private http: HttpClient) {}
 
   async canActivate(
@@ -38,7 +40,7 @@ class OrderGuard implements CanActivate {
     const { accessCode } = next.queryParams;
     if (accessCode) {
       return this.http
-        .get<any>(`http://localhost:3100/api/extra/order`, {
+        .get<any>(`${this.url}/extra/order`, {
           params: { accessCode },
         })
         .toPromise()

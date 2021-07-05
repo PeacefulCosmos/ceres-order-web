@@ -6,12 +6,11 @@ export interface OrderItemState extends EntityState<OrderItem> {}
 
 @Injectable({ providedIn: 'root' })
 @StoreConfig({
-  name: 'order-item'
+  name: 'order-item',
+  idKey: '_id',
 })
 export class OrderItemStore extends EntityStore<OrderItemState> {
-
   constructor() {
     super();
   }
-
 }

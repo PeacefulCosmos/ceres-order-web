@@ -34,5 +34,24 @@ table th {
 }
 
 .total-price-wrapper {
+  // display: inline;
   margin-top: 20px;
+}
+
+.settle-button {
+  float: right;
+  margin-right: 5%;
+}
+
+.total-price {
+  display: inline-block;
+  font-weight: 600;
+  font-size: large;
+}
+
+table {
+  th,
+  td {
+    font-size: medium;
+  }
 }
