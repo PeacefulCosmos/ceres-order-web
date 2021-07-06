@@ -29,6 +29,7 @@ export interface SentOrder {
 
 export type SentOrdersRaw = {
   _id?: string;
+  seatIndex: string[];
   sentItems: SentOrder[];
   orderTime?: Date;
   sentOrder_id?: string;
@@ -36,6 +37,7 @@ export type SentOrdersRaw = {
 };
 
 export interface SentOrders {
+  seatIndex: string[];
   sentItems: SentOrder[];
   orderTime?: Date;
   sentOrder_id?: string;

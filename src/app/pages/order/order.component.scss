@@ -28,6 +28,13 @@ table th {
   padding: 2px 20px;
 }
 
+table {
+  th,
+  td {
+    font-size: medium;
+  }
+}
+
 .submit-button {
   float: right;
   margin-right: 5%;
@@ -47,11 +54,4 @@ table th {
   display: inline-block;
   font-weight: 600;
   font-size: large;
-}
-
-table {
-  th,
-  td {
-    font-size: medium;
-  }
 }

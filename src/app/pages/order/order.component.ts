@@ -13,6 +13,9 @@ import { OrderItem, OrderItemService } from '@app/state/order-item/';
 import { OrderComfirmDialogComponent } from './order-comfirm-dialog/order-comfirm-dialog.component';
 import { environment } from '@env/environment';
 import { SentOrder, SentOrderService } from '@app/state/sent-order';
+import { OrderHistory, OrderHistoryService } from '@app/state/order-history';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmSettleDialogComponent } from './confirm-settle-dialog/confirm-settle-dialog.component';
 
 @Component({
   selector: 'app-order',
@@ -31,8 +34,12 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
 
   dishDataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   drinkDataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  @ViewChild('dishPaginator') dishPaginator: MatPaginator;
-  @ViewChild('drinkPaginator') drinkPaginator: MatPaginator;
+  @ViewChild('dishPaginator') set dishPaginator(value: MatPaginator) {
+    this.dishDataSource.paginator = value;
+  }
+  @ViewChild('drinkPaginator') set drinkPaginator(value: MatPaginator) {
+    this.drinkDataSource.paginator = value;
+  }
 
   //test
   testDataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
@@ -55,7 +62,9 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     private _formBuilder: FormBuilder,
     private dialog: MatDialog,
     private orderItemSer: OrderItemService,
-    private sentOrderSer: SentOrderService
+    private sentOrderSer: SentOrderService,
+    private orderHistoryServ: OrderHistoryService,
+    private snackBar: MatSnackBar
   ) {}
 
   subscribe(observer: Observable<any>, callback: (...args: any) => void): void {
@@ -183,7 +192,26 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  settlePayment() {}
+  settlePayment() {
+    this.dialog
+      .open(ConfirmSettleDialogComponent)
+      .afterClosed()
+      .subscribe(async (confirmed) => {
+        if (confirmed) {
+          const orderHistory: OrderHistory = {
+            ...this.order,
+            totalPrice: this.orderPrice,
+            modifiedAt: new Date(),
+          } as OrderHistory;
+          await this.orderHistoryServ.createOrderHistory(orderHistory);
+          this.snackBar.open('Order Settled!', '', { duration: 1000 });
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+        }
+      });
+  }
 
   onSubmit() {
     const orderItems: OrderItem[] = [];
