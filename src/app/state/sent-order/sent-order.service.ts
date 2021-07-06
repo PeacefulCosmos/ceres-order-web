@@ -37,19 +37,19 @@ export class SentOrderService {
   // }
 
   createSentOrders(orderItems: OrderItem[], order: Order) {
-    console.log(this.socket);
-    let sentOrders: SentOrdersRaw = {
-      sentItems: [],
-      orderTime: new Date(),
-      companyId: order.companyId.toString(),
-    };
-    orderItems.forEach((i) => {
-      sentOrders.sentItems.push({
-        ...i,
-        companyId: order.companyId.toString(),
-      });
-    });
+    // console.log(this.socket);
+    // let sentOrders: SentOrdersRaw = {
+    //   sentItems: [],
+    //   orderTime: new Date(),
+    //   companyId: order.companyId.toString(),
+    // };
+    // orderItems.forEach((i) => {
+    //   sentOrders.sentItems.push({
+    //     ...i,
+    //     companyId: order.companyId.toString(),
+    //   });
+    // });
 
-    this.socket.emit('new-order', sentOrders);
+    this.socket.emit('new-order', { orderItems: orderItems, order: order });
   }
 }
