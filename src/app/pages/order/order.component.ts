@@ -11,6 +11,8 @@ import { Item } from '@app/state/item';
 import { Order } from '@app/state/order';
 import { OrderItem, OrderItemService } from '@app/state/order-item/';
 import { OrderComfirmDialogComponent } from './order-comfirm-dialog/order-comfirm-dialog.component';
+import { environment } from '@env/environment';
+import { SentOrder, SentOrderService } from '@app/state/sent-order';
 
 @Component({
   selector: 'app-order',
@@ -48,14 +50,12 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
     'action',
   ];
 
-  // order table
-  // orderDisplayedColumns: string[] = ['No.', 'name', ''];
-
   constructor(
     private route: ActivatedRoute,
     private _formBuilder: FormBuilder,
     private dialog: MatDialog,
-    private orderItemSer: OrderItemService
+    private orderItemSer: OrderItemService,
+    private sentOrderSer: SentOrderService
   ) {}
 
   subscribe(observer: Observable<any>, callback: (...args: any) => void): void {
@@ -206,11 +206,18 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         .subscribe((confirmed) => {
           if (confirmed) {
             this.orderItemSer.addOrderItems(orderItems, this.order);
+            this.sentOrderSer.createSentOrders(orderItems, this.order);
             this.resetAllQuantity();
             this.orderPrice = 0;
             this.order.items.forEach((i) => {
               this.orderPrice += i.price * i.quantity;
             });
+
+            //socket.io
+            // const sentOrderArr: SentOrder[] = [];
+            // orderItems.forEach(o => {
+            //   sentOrderArr.push({...o, sentOrder_id: this.})
+            // })
           }
         });
     }

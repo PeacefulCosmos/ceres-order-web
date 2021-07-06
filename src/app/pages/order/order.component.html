@@ -59,9 +59,7 @@
             </ng-container>
             <ng-container matColumnDef="price">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-              <td mat-cell *matCellDef="let i">
-                {{ i.value["price"] }}
-              </td>
+              <td mat-cell *matCellDef="let i">${{ i.value["price"] }}</td>
             </ng-container>
             <ng-container matColumnDef="quantity">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -140,9 +138,7 @@
             </ng-container>
             <ng-container matColumnDef="price">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-              <td mat-cell *matCellDef="let i">
-                {{ i.value["price"] }}
-              </td>
+              <td mat-cell *matCellDef="let i">${{ i.value["price"] }}</td>
             </ng-container>
             <ng-container matColumnDef="quantity">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
